@@ -1,7 +1,7 @@
 #include "monty.h"
 
 /**
- * _pint - prints the vlaue at the top of the stack
+ * pint - prints the vlaue at the top of the stack
  * followed by a new line
  * @stack: double pointer to the top of the stack
  * @line_number: script line number
