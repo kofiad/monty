@@ -41,6 +41,7 @@ void _push(stack_t **stack, char *arg, unsigned int line_number);
 void _pall(stack_t **stack);
 void _pint(stack_t **stack, unsigned int line_number);
 void _pop(stack_t **stack, unsigned int line_number);
+void _swap(stack_t **stack, unsigned int line_number);
 
 /*Helper function prototypes*/
 int _isnumber(char *s);
