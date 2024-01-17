@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -46,5 +47,7 @@ void nop(stack_t **stack, unsigned int line_number);
 
 /*Helper function prototypes*/
 int _isnumber(char *s);
+void (*get_op_func(char *s))(stack_t **stack, unsigned int line_number);
+void free_stack(stack_t **stack);
 
 #endif
