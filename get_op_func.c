@@ -48,43 +48,48 @@ void (*get_opcodes(char *opc))(stack_t **stack, unsigned int line_number)
 /**
  * getline - function reads a line from the given file pointer
  * into a dynamically allocated buffer.
- * @fp: file pointeer
+ * @fd: file pointeer
  * Return: returns NULL on failure.
  * line on success
  */
-char *getline(FILE *fp)
-{
-	char ch;
-	int i = 0;
-	char *line = malloc(BUFFER_SIZE);
-	char *expanded_line = realloc(line, i + BUFFER_SIZE);
+ssize_t getline(char **buffer, size_t *size, FILE *fd) {
+	if (!buffer || !size || !fd) {
+		return -1;
+	}
 
-	if (!line)
-		return (NULL);
-	while ((ch = fgetc(fp)) != EOF && ch != '\n')
-	{
-		line[i++] = ch;
+	if (*buffer == NULL || *size == 0) {
+		*buffer = malloc(BUFFER_SIZE);
+		if (!*buffer) return -1;
+		*size = BUFFER_SIZE;
+	}
+
+	char ch;
+	size_t i = 0;
+	while ((ch = fgetc(fd)) != EOF && ch != '\n') {
+		(*buffer)[i++] = ch;
+
 		/*If buffer is full, expand it*/
-		if (i % BUFFER_SIZE == 0)
-		{
-			if (!expanded_line)
-			{
-				free(line);
-				return (NULL);
+		if (i >= *size) {
+			*size *= 2;
+			char *expanded_buffer = realloc(*buffer, *size);
+			if (!expanded_buffer) {
+				free(*buffer);
+				*buffer = NULL;
+				return -1;
 			}
-			line = expanded_line;
+			*buffer = expanded_buffer;
 		}
 	}
 
 	/*If we didn't read anything before EOF or an error, clean up and exit*/
-	if (i == 0 && (ch == EOF || ferror(fp)))
-	{
-		free(line);
-		return (NULL);
+	if (i == 0 && (ch == EOF || ferror(fd))) {
+		free(*buffer);
+		*buffer = NULL;
+		return -1;
 	}
 
 	/*Null-terminate the string*/
-	line[i] = '\0';
+	(*buffer)[i] = '\0';
 
-	return (line);
+	return i;
 }
