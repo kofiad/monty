@@ -1,4 +1,7 @@
 #include "monty.h"
+#include <stdio.h>
+#include <stdlib.h>
+#define BUFFER_SIZE 1024
 
 /**
  * get_opcodes - selects the correct opcode to perform
@@ -38,4 +41,50 @@ void (*get_opcodes(char *opc))(stack_t **stack, unsigned int line_number)
 	}
 
 	return (instruct[i].f);
+}
+
+
+
+/**
+ * getline - function reads a line from the given file pointer
+ * into a dynamically allocated buffer.
+ * @fp: file pointeer
+ * Return: returns NULL on failure.
+ * line on success
+ */
+char *getline(FILE *fp)
+{
+	char ch;
+	int i = 0;
+	char *line = malloc(BUFFER_SIZE);
+	char *expanded_line = realloc(line, i + BUFFER_SIZE);
+
+	if (!line)
+		return (NULL);
+	while ((ch = fgetc(fp)) != EOF && ch != '\n')
+	{
+		line[i++] = ch;
+		/*If buffer is full, expand it*/
+		if (i % BUFFER_SIZE == 0)
+		{
+			if (!expanded_line)
+			{
+				free(line);
+				return (NULL);
+			}
+			line = expanded_line;
+		}
+	}
+
+	/*If we didn't read anything before EOF or an error, clean up and exit*/
+	if (i == 0 && (ch == EOF || ferror(fp)))
+	{
+		free(line);
+		return (NULL);
+	}
+
+	/*Null-terminate the string*/
+	line[i] = '\0';
+
+	return (line);
 }
