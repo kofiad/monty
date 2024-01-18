@@ -84,7 +84,7 @@ void _rotr(stack_t **doubly, unsigned int cline);
 
 /*get function*/
 void (*get_opcodes(char *opc))(stack_t **stack, unsigned int line_number);
-char *getline(FILE *fp);
+ssize_t getline(char **buffer, size_t *size, FILE *fd);
 
 /*imported functions*/
 int _sch(char *s, char c);
